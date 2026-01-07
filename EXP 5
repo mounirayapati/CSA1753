@@ -1,0 +1,44 @@
+from collections import deque
+
+def is_valid(m, c):
+    return (m == 0 or m >= c) and (3-m == 0 or 3-m >= 3-c)
+
+def missionaries_cannibals():
+    start = (3, 3, 1)
+    goal = (0, 0, 0)
+
+    queue = deque([(start, [])])
+    visited = set()
+
+    while queue:
+        (m, c, b), path = queue.popleft()
+
+        if (m, c, b) == goal:
+            path.append((m, c, b))
+            return path
+
+        if (m, c, b) in visited:
+            continue
+        visited.add((m, c, b))
+
+        moves = [(1,0),(2,0),(0,1),(0,2),(1,1)]
+
+        for dm, dc in moves:
+            if b == 1:   # Boat on left
+                nm, nc, nb = m-dm, c-dc, 0
+            else:        # Boat on right
+                nm, nc, nb = m+dm, c+dc, 1
+
+            if 0 <= nm <= 3 and 0 <= nc <= 3 and is_valid(nm, nc):
+                queue.append(((nm, nc, nb), path + [(m, c, b)]))
+
+    return None
+
+# Driver code
+solution = missionaries_cannibals()
+
+if solution:
+    for step in solution:
+        print(step)
+else:
+    print("No solution found")
