@@ -1,0 +1,49 @@
+def is_safe(region, color, assignment, neighbors):
+    # Check if any neighboring region has the same color
+    for neighbor in neighbors[region]:
+        if neighbor in assignment and assignment[neighbor] == color:
+            return False
+    return True
+
+def map_coloring(regions, colors, neighbors, assignment={}):
+    # If all regions are assigned a color
+    if len(assignment) == len(regions):
+        return assignment
+
+    # Select a region not yet assigned
+    unassigned = [r for r in regions if r not in assignment]
+    region = unassigned[0]
+
+    for color in colors:
+        if is_safe(region, color, assignment, neighbors):
+            assignment[region] = color
+            result = map_coloring(regions, colors, neighbors, assignment)
+            if result:
+                return result
+            assignment.pop(region)  # Backtrack
+
+    return None
+
+# Example: Australia map
+regions = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+colors = ['Red', 'Green', 'Blue']
+
+# Neighbors dictionary
+neighbors = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW'],
+    'T': []  # Tasmania has no land neighbors
+}
+
+solution = map_coloring(regions, colors, neighbors)
+
+if solution:
+    print("Map Coloring Solution:")
+    for region in regions:
+        print(f"{region} -> {solution[region]}")
+else:
+    print("No solution found.")
