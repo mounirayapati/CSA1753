@@ -1,0 +1,55 @@
+def print_board(board):
+    print()
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 9)
+    print()
+
+def check_winner(board, player):
+    # Check rows and columns
+    for i in range(3):
+        if all(board[i][j] == player for j in range(3)) or \
+           all(board[j][i] == player for j in range(3)):
+            return True
+    # Check diagonals
+    if board[0][0] == board[1][1] == board[2][2] == player or \
+       board[0][2] == board[1][1] == board[2][0] == player:
+        return True
+    return False
+
+def tic_tac_toe():
+    board = [[" "]*3 for _ in range(3)]
+    players = ['X', 'O']
+    turn = 0
+
+    print("Tic Tac Toe Game!")
+    print_board(board)
+
+    for move in range(9):
+        player = players[turn % 2]
+        print(f"Player {player}'s turn.")
+
+        while True:
+            try:
+                row = int(input("Enter row (0-2): "))
+                col = int(input("Enter column (0-2): "))
+                if board[row][col] == " ":
+                    board[row][col] = player
+                    break
+                else:
+                    print("Cell already taken. Try again.")
+            except (ValueError, IndexError):
+                print("Invalid input. Enter numbers 0-2.")
+
+        print_board(board)
+
+        if check_winner(board, player):
+            print(f"Player {player} wins!")
+            return
+
+        turn += 1
+
+    print("It's a tie!")
+
+# Run the game
+tic_tac_toe()
