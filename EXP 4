@@ -1,0 +1,41 @@
+import itertools
+
+def solve_cryptarithmetic():
+    # Define the problem
+    # Words on the left side of equation
+    words = ['SEND', 'MORE']
+    # Result word
+    result = 'MONEY'
+
+    # Get unique letters
+    letters = set(''.join(words) + result)
+    letters = list(letters)
+
+    if len(letters) > 10:
+        print("Too many letters! Cannot assign unique digits.")
+        return
+
+    # Try all possible digit assignments
+    for perm in itertools.permutations(range(10), len(letters)):
+        mapping = dict(zip(letters, perm))
+
+        # Leading letters cannot be zero
+        if any(mapping[word[0]] == 0 for word in words + [result]):
+            continue
+
+        # Convert words to numbers
+        numbers = [int(''.join(str(mapping[ch]) for ch in word)) for word in words]
+        result_number = int(''.join(str(mapping[ch]) for ch in result))
+
+        # Check if equation is satisfied
+        if sum(numbers) == result_number:
+            print("Solution Found:")
+            for word, number in zip(words, numbers):
+                print(f"{word} = {number}")
+            print(f"{result} = {result_number}")
+            return
+
+    print("No solution found.")
+
+# Run the program
+solve_cryptarithmetic()
